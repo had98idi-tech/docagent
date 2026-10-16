@@ -14,7 +14,7 @@ from src.schemas import ExtractionDocument
 load_dotenv(override=True)  # override=True -> la clé du .env passe en priorité
 client = Groq(api_key=os.environ["GROQ_API_KEY"])
 # le nom du modèle est dans le .env, comme ça on peut le changer sans toucher au code
-MODELE = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+MODELE = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
 PROMPT_SYSTEME = """Tu es un assistant qui extrait les informations clés d'un document.
 Réponds UNIQUEMENT avec un JSON valide qui respecte ce schéma :
