@@ -8,6 +8,7 @@ from pathlib import Path
 from src.pdf_reader import lire_pdf, couper_texte
 from src.extractor import extraire_infos
 from src.classifier import classer_document
+from src.validation import verifier
 
 
 def main():
@@ -25,10 +26,14 @@ def main():
     print("2) Classification du document...")
     classification = classer_document(texte)
 
-    # on regroupe les 2 résultats dans un seul JSON
+    print("3) Vérification de la confiance...")
+    validation = verifier(classification)
+
+    # on regroupe les 3 résultats dans un seul JSON
     resultat = {
         "extraction": extraction.model_dump(),
         "classification": classification.model_dump(),
+        "validation": validation,
     }
     json_txt = json.dumps(resultat, indent=2, ensure_ascii=False)
     print(json_txt)
@@ -38,6 +43,7 @@ def main():
     sortie = Path("outputs") / (Path(chemin_pdf).stem + ".json")
     sortie.write_text(json_txt, encoding="utf-8")
     print(f"\nRésultat sauvegardé dans {sortie}")
+    print(f"Statut : {validation['statut']}")
 
 
 if __name__ == "__main__":

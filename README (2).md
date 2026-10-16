@@ -7,7 +7,7 @@ Agent IA qui analyse des documents PDF : extraction d'informations en JSON struc
 ## Fonctionnalités
 - [x] Extraction PDF → JSON structuré (Pydantic + LLM via Groq)
 - [x] Classification (type + confidentialité) avec justification citée et vérifiée
-- [ ] Seuil de confiance + validation humaine
+- [x] Seuil de confiance + validation humaine (human in the loop)
 - [ ] RAG sur le document
 - [ ] Évaluation « LLM as a judge »
 - [ ] API FastAPI + démo Streamlit + Docker
