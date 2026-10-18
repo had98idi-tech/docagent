@@ -9,4 +9,4 @@ N'invente rien : si une info n'est pas dans le document, laisse la liste vide.""
 
 
 def extraire_infos(texte: str) -> ExtractionDocument:
-    return appeler_llm_json(PROMPT_EXTRACTION, texte, ExtractionDocument)
+    return appeler_llm_json(PROMPT_EXTRACTION, f"Document :\n{texte}", ExtractionDocument)

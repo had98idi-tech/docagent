@@ -24,31 +24,39 @@ def raisons_de_verifier(classification: Classification) -> list[str]:
     return raisons
 
 
-def validation_humaine(classification: Classification, raisons: list[str]) -> dict:
-    """Affiche le problème dans le terminal et demande à l'humain de valider ou corriger."""
+def verifier(classification: Classification) -> dict:
+    """Décide si on valide automatiquement ou si un humain doit vérifier.
+    Ici on ne pose PAS la question : c'est le terminal, l'API ou Streamlit qui le font."""
+    raisons = raisons_de_verifier(classification)
+    if not raisons:
+        return {"statut": "validé automatiquement",
+                "confidentialite_finale": classification.confidentialite, "raisons": []}
+    return {"statut": "en attente de validation humaine",
+            "confidentialite_finale": None, "raisons": raisons}
+
+
+def appliquer_decision_humaine(validation: dict, niveau_choisi: str, proposition: str) -> dict:
+    """Enregistre la décision de l'humain (utilisé par le terminal, l'API et Streamlit)."""
+    if niveau_choisi not in NIVEAUX:
+        raise ValueError(f"Niveau inconnu : {niveau_choisi} (choisir parmi {NIVEAUX})")
+    statut = "validé par un humain" if niveau_choisi == proposition else "corrigé par un humain"
+    return {**validation, "statut": statut, "confidentialite_finale": niveau_choisi}
+
+
+def demander_dans_le_terminal(resultat: dict) -> dict:
+    """Version terminal : affiche le problème et demande à l'humain de valider ou corriger."""
+    classification, validation = resultat["classification"], resultat["validation"]
     print("\n⚠️  CAS INCERTAIN — validation humaine demandée")
-    for r in raisons:
+    for r in validation["raisons"]:
         print(f"   - {r}")
-    print(f"   Proposition du modèle : {classification.type_document} / {classification.confidentialite}")
-    print(f"   Citation : « {classification.citation} »")
+    print(f"   Proposition du modèle : {classification['type_document']} / {classification['confidentialite']}")
+    print(f"   Citation : « {classification['citation']} »")
 
     reponse = input("Tu valides ? (o = oui / n = non) : ").strip().lower()
     if reponse == "o":
-        return {"statut": "validé par un humain", "confidentialite_finale": classification.confidentialite}
-
-    # l'humain corrige le niveau de confidentialité
-    nouveau = ""
-    while nouveau not in NIVEAUX:
-        nouveau = input("Quel est le bon niveau ? (public / interne / confidentiel) : ").strip().lower()
-    return {"statut": "corrigé par un humain", "confidentialite_finale": nouveau}
-
-
-def verifier(classification: Classification) -> dict:
-    """Point d'entrée : décide si on valide automatiquement ou si on demande à un humain."""
-    raisons = raisons_de_verifier(classification)
-    if not raisons:
-        return {"statut": "validé automatiquement", "confidentialite_finale": classification.confidentialite, "raisons": []}
-
-    decision = validation_humaine(classification, raisons)
-    decision["raisons"] = raisons
-    return decision
+        choix = classification["confidentialite"]
+    else:
+        choix = ""
+        while choix not in NIVEAUX:
+            choix = input("Quel est le bon niveau ? (public / interne / confidentiel) : ").strip().lower()
+    return appliquer_decision_humaine(validation, choix, classification["confidentialite"])

@@ -21,7 +21,7 @@ def normaliser(texte: str) -> str:
 
 
 def classer_document(texte: str) -> Classification:
-    resultat = appeler_llm_json(PROMPT_CLASSIFICATION, texte, Classification)
+    resultat = appeler_llm_json(PROMPT_CLASSIFICATION, f"Document :\n{texte}", Classification)
 
     # Anti-hallucination : on vérifie que la citation existe VRAIMENT dans le document
     resultat.citation_verifiee = normaliser(resultat.citation) in normaliser(texte)

@@ -1,6 +1,6 @@
 # llm.py
 # Fonction commune pour appeler le LLM (Groq) et récupérer un JSON validé par Pydantic.
-# Comme ça on n'écrit pas le même code dans extractor.py ET classifier.py
+# Comme ça on n'écrit pas le même code dans tous les fichiers
 
 import os
 import json
@@ -14,18 +14,20 @@ client = Groq(api_key=os.environ["GROQ_API_KEY"])
 MODELE = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
 
-def appeler_llm_json(prompt_systeme: str, texte: str, schema_pydantic: type[BaseModel], essais_max: int = 2):
-    """Envoie le texte au LLM et renvoie un objet Pydantic valide (ou une erreur)."""
+def appeler_llm_json(prompt_systeme: str, texte: str, schema_pydantic: type[BaseModel],
+                     modele: str | None = None, essais_max: int = 2):
+    """Envoie le texte au LLM et renvoie un objet Pydantic valide (ou une erreur).
+    modele : on peut choisir un autre modèle (ex : pour le LLM-juge)."""
     # on ajoute le schéma JSON (généré par Pydantic) à la fin du prompt
     schema = json.dumps(schema_pydantic.model_json_schema(), ensure_ascii=False)
     messages = [
         {"role": "system", "content": prompt_systeme + "\n\nRéponds UNIQUEMENT avec un JSON valide qui respecte ce schéma :\n" + schema},
-        {"role": "user", "content": f"Document :\n{texte}"},
+        {"role": "user", "content": texte},
     ]
 
     for essai in range(essais_max):
         reponse = client.chat.completions.create(
-            model=MODELE,
+            model=modele or MODELE,
             messages=messages,
             response_format={"type": "json_object"},  # force une sortie JSON
             temperature=0,  # on veut des résultats stables
