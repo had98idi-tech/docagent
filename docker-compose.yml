@@ -1,0 +1,16 @@
+# docker-compose.yml
+# Lance l'API ET la démo Streamlit en une seule commande : docker compose up --build
+
+services:
+  demo:
+    build: .
+    env_file: .env          # la clé Groq est lue depuis ton .env (jamais copiée dans l'image)
+    ports:
+      - "8501:8501"
+
+  api:
+    build: .
+    env_file: .env
+    command: ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"

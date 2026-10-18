@@ -2,3 +2,10 @@ groq
 pypdf>=5.0
 pydantic>=2.0
 python-dotenv
+numpy
+sentence-transformers
+langgraph
+fastapi
+uvicorn[standard]
+python-multipart
+streamlit
