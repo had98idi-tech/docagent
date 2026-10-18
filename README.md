@@ -1,4 +1,4 @@
-# 📄 DocAgent
+#  DocAgent
 
 **Agent IA qui analyse des documents PDF** : il extrait les informations clés en JSON structuré, classe le document (type + niveau de confidentialité) en citant le passage qui justifie sa décision, demande l'avis d'un humain quand il n'est pas sûr, répond aux questions sur le document (RAG) et fait évaluer son propre travail par un second LLM (*LLM as a judge*).
 
@@ -6,7 +6,7 @@ Le tout est orchestré avec **LangGraph**, exposé via une **API FastAPI**, pré
 
 ![Démo DocAgent](demo.png)
 
-## ✨ Fonctionnalités
+##  Fonctionnalités
 
 | | Fonctionnalité | Détail |
 |---|---|---|
@@ -17,7 +17,7 @@ Le tout est orchestré avec **LangGraph**, exposé via une **API FastAPI**, pré
 | 5 | **LLM as a judge** | Un **second modèle**, différent du premier, note l'extraction (fidélité, complétude, absence d'hallucination) et liste les erreurs repérées |
 | 6 | **API + démo + Docker** | API REST FastAPI (doc interactive sur `/docs`), interface Streamlit, `docker compose up` pour tout lancer |
 
-## 🧠 Architecture de l'agent (LangGraph)
+## Architecture de l'agent (LangGraph)
 
 ```mermaid
 flowchart LR
@@ -52,7 +52,7 @@ docagent/
 └── docker-compose.yml
 ```
 
-## 🚀 Installation
+## Installation
 
 ```bash
 git clone https://github.com/had98idi-tech/docagent.git
@@ -62,7 +62,7 @@ pip install -r requirements.txt
 cp .env.example .env   # puis mettre ta clé Groq (gratuite sur console.groq.com)
 ```
 
-## ▶️ Utilisation
+## Utilisation
 
 **Démo Streamlit** (le plus visuel)
 ```bash
@@ -94,7 +94,7 @@ docker compose up --build
 # démo : http://localhost:8501   ·   API : http://localhost:8000/docs
 ```
 
-## 📋 Exemple de résultat (extrait)
+##  Exemple de résultat (extrait)
 
 ```json
 {
@@ -111,7 +111,7 @@ docker compose up --build
 }
 ```
 
-## 🛠️ Choix techniques
+## Choix techniques
 
 - **Groq** (modèles `gpt-oss-120b` pour l'agent, `gpt-oss-20b` pour le juge) : API gratuite et rapide ; les modèles se changent dans le `.env` sans toucher au code.
 - **Pydantic** : sorties du LLM typées et validées ; listes fermées (`Literal`) pour la classification.
@@ -120,14 +120,14 @@ docker compose up --build
 - **Embeddings locaux** (`paraphrase-multilingual-MiniLM-L12-v2`) : gratuits, multilingues, sans base vectorielle (produit scalaire NumPy, suffisant pour un document).
 - **Configuration** par variables d'environnement (`.env`) : la clé API n'est jamais dans le code ni dans l'image Docker.
 
-## 🔭 Pistes d'amélioration
+##  Pistes d'amélioration
 
 - OCR pour les PDF scannés
 - Base de données (SQLite) au lieu du stockage en mémoire de l'API
 - Jeu de test annoté pour comparer les notes du LLM-juge à un jugement humain
 - Base vectorielle (FAISS, Chroma) pour interroger plusieurs documents à la fois
 
-## 👩‍💻 Autrice
+##  Autrice
 
 **Sara Hadidi** — Master 2 Langue et Informatique – Traitement Automatique des Langues (NLP), Sorbonne Université
 GitHub : [had98idi-tech](https://github.com/had98idi-tech)
