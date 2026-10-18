@@ -4,7 +4,7 @@
 
 Le tout est orchestré avec **LangGraph**, exposé via une **API FastAPI**, présenté dans une **démo Streamlit** et conteneurisé avec **Docker**.
 
-<!-- Ajoute ici une capture de la démo : ![Démo DocAgent](docs/demo.png) -->
+![Démo DocAgent](demo.png)
 
 ## ✨ Fonctionnalités
 
